@@ -146,7 +146,8 @@ export function MonthCalendar({ days, targets, logs }: MonthCalendarProps) {
           <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Tracker breakdown
           </h3>
-          <div className="overflow-x-auto -mx-4 px-4">
+          {/* Desktop: dense fixed-cell rows with numbers (scrolls if wide) */}
+          <div className="hidden md:block overflow-x-auto -mx-4 px-4">
             <div style={{ minWidth: `${130 + days.length * 26}px` }}>
               {/* Day number header */}
               <div className="flex gap-0.5 mb-1 pl-[130px]">
@@ -211,6 +212,38 @@ export function MonthCalendar({ days, targets, logs }: MonthCalendarProps) {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Mobile: full-width heatmap, cells flex to fit (color-only, no zoom) */}
+          <div className="md:hidden space-y-1">
+            {visibleRecurringTargets.map(target => (
+              <div key={target.id} className="flex items-center gap-1">
+                <div className="w-16 shrink-0 flex items-center gap-1 min-w-0">
+                  <span className="text-sm shrink-0">{target.emoji}</span>
+                  <span className="text-[10px] font-medium truncate">{target.title}</span>
+                </div>
+                <div className="flex gap-px flex-1">
+                  {days.map(d => {
+                    if (!isScheduled(target, d)) {
+                      return <div key={d} className="flex-1 h-5 rounded-[2px] bg-muted/30" />
+                    }
+                    const { pct, color } = getCellStyle(d, target)
+                    return (
+                      <Link key={d} href={`/day/${d}`} className="flex-1">
+                        <div
+                          className={cn('h-5 rounded-[2px]', pct === 0 && 'bg-muted')}
+                          style={{
+                            backgroundColor: pct > 0 ? color : undefined,
+                            opacity: pct > 0 ? 0.25 + (pct / 100) * 0.75 : 1,
+                          }}
+                          title={`${target.title} — ${d}`}
+                        />
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
