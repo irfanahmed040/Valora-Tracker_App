@@ -1,10 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
-import { CalendarRange, LayoutDashboard, Sparkles, LogOut } from 'lucide-react'
+import { isAdminEmail } from '@/lib/admin'
+import { CalendarRange, LayoutDashboard, Sparkles, LogOut, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils'
@@ -21,6 +23,12 @@ export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setIsAdmin(isAdminEmail(data.user?.email)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function signOut() {
     await supabase.auth.signOut()
@@ -62,6 +70,21 @@ export function Sidebar() {
             </Link>
           )
         })}
+
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className={cn(
+              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+              pathname.startsWith('/admin')
+                ? 'bg-white/25 text-white backdrop-blur-sm shadow-sm'
+                : 'text-white/75 hover:bg-white/15 hover:text-white'
+            )}
+          >
+            <ShieldCheck className="h-4 w-4" />
+            Admin
+          </Link>
+        )}
       </nav>
 
       <div className="border-t border-white/20 pt-3 space-y-1 mt-auto">

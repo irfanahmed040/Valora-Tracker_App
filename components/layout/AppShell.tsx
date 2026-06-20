@@ -12,7 +12,7 @@ interface AppShellProps {
 }
 
 // Routes that should render WITHOUT app chrome (no sidebar/bottom nav)
-const BARE_ROUTES = ['/login', '/auth']
+const BARE_ROUTES = ['/login', '/auth', '/admin']
 
 export function AppShell({ hasUser, children }: AppShellProps) {
   const pathname = usePathname()
