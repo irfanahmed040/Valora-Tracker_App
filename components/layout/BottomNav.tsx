@@ -1,9 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { cn, formatDate } from '@/lib/utils'
-import { CalendarRange, LayoutDashboard, Sparkles } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import { isAdminEmail } from '@/lib/admin'
+import { CalendarRange, LayoutDashboard, Sparkles, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { MobileMenu } from './MobileMenu'
 
@@ -16,6 +19,12 @@ const navItems = [
 export function BottomNav() {
   const pathname = usePathname()
   const todayHref = `/day/${formatDate(new Date())}`
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => setIsAdmin(isAdminEmail(data.user?.email)))
+  }, [])
 
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex flex-col">
@@ -55,6 +64,19 @@ export function BottomNav() {
             </Link>
           )
         })}
+
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className={cn(
+              'flex flex-col items-center gap-0.5 px-4 py-1 rounded-lg text-xs font-medium transition-colors',
+              pathname.startsWith('/admin') ? 'bg-white/25 text-white backdrop-blur-sm' : 'text-white/75'
+            )}
+          >
+            <ShieldCheck className="h-4 w-4" />
+            Admin
+          </Link>
+        )}
       </div>
     </div>
   )
