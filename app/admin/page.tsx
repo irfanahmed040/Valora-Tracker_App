@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
 import { ShieldCheck, ArrowLeft } from 'lucide-react'
+import { AdminUserAnalytics } from '@/components/admin/AdminUserAnalytics'
 import type { Target, DailyLog } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
@@ -93,9 +94,12 @@ export default async function AdminPage() {
                   </div>
                   <p className="text-[11px] text-muted-foreground mt-0.5 font-mono truncate">{u.id}</p>
                 </div>
-                <div className="text-right text-[11px] text-muted-foreground">
-                  <div>Joined {fmt(u.created_at)}</div>
-                  <div>Last seen {fmt(u.last_sign_in_at)}</div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right text-[11px] text-muted-foreground">
+                    <div>Joined {fmt(u.created_at)}</div>
+                    <div>Last seen {fmt(u.last_sign_in_at)}</div>
+                  </div>
+                  <AdminUserAnalytics userId={u.id} email={u.email ?? u.id} />
                 </div>
               </div>
 

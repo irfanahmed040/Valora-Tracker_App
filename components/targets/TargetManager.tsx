@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings2 } from 'lucide-react'
+import { Settings2, X } from 'lucide-react'
 import { TargetCard } from './TargetCard'
 import { NewTargetButton } from './NewTargetButton'
 import {
@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import type { Target } from '@/lib/types'
@@ -41,10 +42,18 @@ export function TargetManager({ activeTargets, pausedTargets, userId }: TargetMa
         <span className="text-xs text-muted-foreground font-normal">({countLabel})</span>
       </DialogTrigger>
 
-      <DialogContent className="max-w-lg w-full max-h-[80vh] overflow-y-auto p-0">
+      <DialogContent showCloseButton={false} className="max-w-lg w-full max-h-[80vh] overflow-y-auto p-0">
         <div className="sticky top-0 bg-popover z-10 px-5 pt-5 pb-3 border-b">
           <DialogHeader>
-            <DialogTitle className="text-base">Manage targets</DialogTitle>
+            <div className="flex items-center justify-between gap-2">
+              <DialogTitle className="text-base">Manage targets</DialogTitle>
+              <DialogClose
+                render={<Button variant="ghost" size="sm" className="gap-1 -mr-2" />}
+              >
+                <X className="h-4 w-4" />
+                Back
+              </DialogClose>
+            </div>
           </DialogHeader>
           <div className="mt-3 flex justify-end">
             <NewTargetButton userId={userId} />
