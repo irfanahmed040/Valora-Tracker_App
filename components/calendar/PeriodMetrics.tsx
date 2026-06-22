@@ -1,4 +1,5 @@
 import { getDay, parseISO, format } from 'date-fns'
+import { formatDate } from '@/lib/utils'
 import type { Target, DailyLog } from '@/lib/types'
 
 interface PeriodMetricsProps {
@@ -145,6 +146,10 @@ function DonutChart({
 export function PeriodMetrics({ targets, logs, days, isMonth }: PeriodMetricsProps) {
   if (targets.length === 0) return null
 
+  const today = formatDate(new Date())
+  const effectiveDays = days.filter(d => d <= today) // elapsed days only
+  const hasFuture = days.some(d => d > today)
+
   const recurring = targets.filter(t => {
     if (t.scope === 'oneoff') return false
     if (t.deleted_at) return logs.some(l => l.target_id === t.id && days.includes(l.date))
@@ -161,9 +166,14 @@ export function PeriodMetrics({ targets, logs, days, isMonth }: PeriodMetricsPro
     <div className="space-y-6">
       {recurring.length > 0 && (
         <section className="space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Metrics — {label}
-          </h3>
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Metrics — {label}
+            </h3>
+            {hasFuture && (
+              <p className="text-[10px] text-muted-foreground mt-0.5">Counts days so far (through today).</p>
+            )}
+          </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 justify-items-center">
             {recurring.map(target => {
               const logsForTarget = logs.filter(l => l.target_id === target.id)
@@ -171,7 +181,7 @@ export function PeriodMetrics({ targets, logs, days, isMonth }: PeriodMetricsPro
                 <DonutChart
                   key={target.id}
                   target={target}
-                  metric={buildMetric(target, logsForTarget, days)}
+                  metric={buildMetric(target, logsForTarget, effectiveDays)}
                 />
               )
             })}

@@ -17,9 +17,10 @@ interface CounterControlProps {
   date: string
   userId: string
   color?: string
+  onValueChange?: (v: number) => void
 }
 
-export function CounterControl({ target, log, date, userId, color = '#6D28FF' }: CounterControlProps) {
+export function CounterControl({ target, log, date, userId, color = '#6D28FF', onValueChange }: CounterControlProps) {
   const [localValue, setLocalValue] = useState(log?.value ?? 0)
   const [customOpen, setCustomOpen] = useState(false)
   const [customVal, setCustomVal] = useState('')
@@ -39,6 +40,7 @@ export function CounterControl({ target, log, date, userId, color = '#6D28FF' }:
     const newVal = Math.max(0, localRef.current + delta)
     localRef.current = newVal
     setLocalValue(newVal)
+    onValueChange?.(newVal)
 
     if (saveTimer.current) clearTimeout(saveTimer.current)
     saveTimer.current = setTimeout(() => flush(newVal), DEBOUNCE_MS)
@@ -67,6 +69,7 @@ export function CounterControl({ target, log, date, userId, color = '#6D28FF' }:
     if (!isNaN(n) && n >= 0) {
       localRef.current = n
       setLocalValue(n)
+      onValueChange?.(n)
       flush(n)
     }
     setCustomOpen(false)

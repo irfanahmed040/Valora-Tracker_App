@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
@@ -31,13 +31,24 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
   const supabase = createClient()
   const router = useRouter()
 
-  const pct = log ? calcCompletionPercent(log, target) : 0
-  const isDone = log?.completed ?? false
+  // Live optimistic state — bar/labels update instantly, independent of router.refresh()
+  const [value, setValue] = useState(log?.value ?? 0)
+  const [done, setDone] = useState(log?.completed ?? false)
+  useEffect(() => {
+    setValue(log?.value ?? 0)
+    setDone(log?.completed ?? false)
+  }, [log?.value, log?.completed])
+
+  const liveLog = { ...(log ?? {}), value, completed: done } as DailyLog
+  const pct = calcCompletionPercent(liveLog, target)
+  const isDone = done
   const hasNote = !!log?.notes
   const color = target.color
 
   async function toggleCheckbox(checked: boolean) {
     setLoading(true)
+    setDone(checked) // optimistic
+    setValue(checked ? 1 : 0)
     const { error } = await supabase
       .from('daily_logs')
       .upsert({
@@ -48,8 +59,13 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
         completed: checked,
       }, { onConflict: 'user_id,target_id,date' })
 
-    if (error) toast.error('Failed to update')
-    else router.refresh()
+    if (error) {
+      toast.error('Failed to update')
+      setDone(!checked) // revert
+      setValue(!checked ? 1 : 0)
+    } else {
+      router.refresh()
+    }
     setLoading(false)
   }
 
@@ -162,8 +178,9 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
                   date={date}
                   userId={userId}
                   color={color}
+                  onValueChange={setValue}
                 />
-                <TallyMarks count={Math.floor(log?.value ?? 0)} color={target.color} />
+                <TallyMarks count={Math.floor(value)} color={target.color} />
                 {target.target_value && <ColorBar pct={pct} color={color} />}
               </div>
             )}
@@ -198,11 +215,11 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
             {/* Counter type */}
             {target.task_type === 'counter' && (
               <div className="mt-2">
-                <CounterControl target={target} log={log} date={date} userId={userId} color={color} />
+                <CounterControl target={target} log={log} date={date} userId={userId} color={color} onValueChange={setValue} />
                 {target.target_value && (
                   <div className="mt-2 space-y-1">
                     <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">{log?.value ?? 0} / {target.target_value} {target.unit}</span>
+                      <span className="text-muted-foreground">{value} / {target.target_value} {target.unit}</span>
                     </div>
                     <ColorBar pct={pct} color={color} />
                   </div>

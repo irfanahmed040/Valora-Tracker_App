@@ -18,9 +18,10 @@ interface InlineHourControlProps {
   date: string
   userId: string
   color?: string
+  onValueChange?: (v: number) => void
 }
 
-export function InlineHourControl({ target, log, date, userId, color = '#6D28FF' }: InlineHourControlProps) {
+export function InlineHourControl({ target, log, date, userId, color = '#6D28FF', onValueChange }: InlineHourControlProps) {
   const [localValue, setLocalValue] = useState(log?.value ?? 0)
   const [loggerOpen, setLoggerOpen] = useState(false)
   const localRef = useRef(log?.value ?? 0)
@@ -40,6 +41,7 @@ export function InlineHourControl({ target, log, date, userId, color = '#6D28FF'
     const newVal = Math.max(0, parseFloat((localRef.current + delta).toFixed(1)))
     localRef.current = newVal
     setLocalValue(newVal)
+    onValueChange?.(newVal)
     if (delta > 0) {
       pendingDelta.current = parseFloat((pendingDelta.current + delta).toFixed(1))
     }
