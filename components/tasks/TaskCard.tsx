@@ -100,17 +100,33 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
   return (
     <Card
       className={cn(
-        'overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5',
+        'relative isolate overflow-hidden rounded-2xl border border-foreground/10 bg-card/70 backdrop-blur-sm shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5',
         isDone && 'animate-card-pop'
       )}
-      style={isDone ? { backgroundColor: `${color}0d`, boxShadow: `inset 0 0 0 1px ${color}66` } : undefined}
+      style={isDone ? { boxShadow: `inset 0 0 0 1px ${color}80` } : undefined}
     >
-      <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${color}, ${color}00)` }} />
-      <CardContent className="pt-4 pb-3">
+      {/* Diagonal gradient wash */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{ background: `linear-gradient(135deg, ${color}${isDone ? '3a' : '26'} 0%, ${color}0a 32%, transparent 62%)` }}
+      />
+      {/* Faint oversized emoji watermark */}
+      <span
+        aria-hidden
+        className="absolute -right-3 -top-5 text-[92px] leading-none rotate-12 opacity-[0.07] select-none pointer-events-none"
+      >
+        {target.emoji}
+      </span>
+
+      <CardContent className="relative pt-4 pb-3">
         <div className="flex items-start gap-3">
           <span
-            className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-2xl leading-none"
-            style={{ backgroundColor: `${color}1a`, boxShadow: `inset 0 0 0 1px ${color}55` }}
+            className="h-11 w-11 shrink-0 rounded-2xl flex items-center justify-center text-2xl leading-none"
+            style={{
+              background: `linear-gradient(135deg, ${color}38, ${color}12)`,
+              boxShadow: `inset 0 0 0 1px ${color}55, 0 2px 8px ${color}24`,
+            }}
           >
             {target.emoji}
           </span>
@@ -118,7 +134,7 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
             {/* Title row */}
             <div className="flex items-center justify-between gap-2 mb-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold text-sm" style={isDone ? { color } : undefined}>
+                <h3 className="text-[15px] font-semibold tracking-tight" style={isDone ? { color } : undefined}>
                   {target.title}
                 </h3>
                 {isDone && <CheckCircle2 className="h-4 w-4 shrink-0 animate-pop-in" style={{ color }} />}
@@ -264,7 +280,7 @@ function ColorBar({ pct, color }: { pct: number; color: string }) {
   const done = pct >= 100
   return (
     <div className="flex items-center gap-2">
-      <div className="h-2 flex-1 rounded-full bg-muted overflow-hidden">
+      <div className="h-2 flex-1 rounded-full bg-foreground/10 overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
@@ -274,7 +290,10 @@ function ColorBar({ pct, color }: { pct: number; color: string }) {
           }}
         />
       </div>
-      <span className="text-xs font-bold tabular-nums shrink-0" style={{ color }}>
+      <span
+        className="text-[11px] font-bold tabular-nums shrink-0 rounded-full px-1.5 py-0.5"
+        style={{ color, background: `${color}1a` }}
+      >
         {done ? 'DONE' : `${pct}%`}
       </span>
     </div>
