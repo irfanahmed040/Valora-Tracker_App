@@ -114,7 +114,7 @@ export function TaskCard({ target, log, date, userId, streak }: TaskCardProps) {
       {/* Faint oversized emoji watermark */}
       <span
         aria-hidden
-        className="absolute -right-3 -top-5 text-[92px] leading-none rotate-12 opacity-[0.07] select-none pointer-events-none"
+        className="absolute -right-3 -top-5 text-[92px] leading-none rotate-12 opacity-20 select-none pointer-events-none"
       >
         {target.emoji}
       </span>
