@@ -4,13 +4,14 @@ import { WeekCalendar } from '@/components/week/WeekCalendar'
 import { MonthCalendar } from '@/components/month/MonthCalendar'
 import { WeekStats } from '@/components/week/WeekStats'
 import { PeriodMetrics } from '@/components/calendar/PeriodMetrics'
+import { FitnessAnalytics } from '@/components/calendar/FitnessAnalytics'
 import { getWeekDays, getWeekRange, getMonthDays, getMonthRange, formatDate } from '@/lib/utils'
 import { addWeeks, subWeeks, addMonths, subMonths, parseISO, format } from 'date-fns'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
-import type { Target, DailyLog } from '@/lib/types'
+import type { Target, DailyLog, WorkoutSet } from '@/lib/types'
 
 interface PageProps {
   searchParams: Promise<{ view?: string; date?: string }>
@@ -39,18 +40,22 @@ export default async function CalendarPage({ searchParams }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const [{ data: targets }, { data: logs }] = await Promise.all([
+  const [{ data: targets }, { data: logs }, { data: workoutSets }, { data: allWorkoutSets }] = await Promise.all([
     supabase.from('targets').select('*').eq('user_id', user.id).or('active.eq.true,deleted_at.not.is.null').order('created_at'),
     supabase.from('daily_logs').select('*').eq('user_id', user.id).gte('date', rangeStart).lte('date', rangeEnd),
+    supabase.from('workout_sets').select('*').eq('user_id', user.id).gte('date', rangeStart).lte('date', rangeEnd).order('created_at'),
+    supabase.from('workout_sets').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5000),
   ])
 
-  const typedTargets = (targets ?? []) as Target[]
-  const typedLogs    = (logs ?? []) as DailyLog[]
+  const typedTargets   = (targets ?? []) as Target[]
+  const typedLogs      = (logs ?? []) as DailyLog[]
+  const typedWorkouts  = (workoutSets ?? []) as WorkoutSet[]
+  const allWorkouts    = (allWorkoutSets ?? []) as WorkoutSet[]
 
   return (
     <div>
       <Header title="Calendar" />
-      <div className="px-4 py-6 max-w-3xl mx-auto space-y-6">
+      <div className="px-4 py-6 max-w-3xl mx-auto space-y-6 stagger-children">
 
         {/* Controls row */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -114,6 +119,9 @@ export default async function CalendarPage({ searchParams }: PageProps) {
 
         {/* Per-target numeric metrics */}
         <PeriodMetrics targets={typedTargets} logs={typedLogs} days={days} isMonth={isMonth} />
+
+        {/* Fitness */}
+        <FitnessAnalytics userId={user.id} sets={typedWorkouts} allSets={allWorkouts} days={days} />
 
       </div>
     </div>

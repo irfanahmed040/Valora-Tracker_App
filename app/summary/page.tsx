@@ -46,7 +46,7 @@ export default async function SummaryPage({ searchParams }: PageProps) {
   return (
     <div>
       <Header title="AI Summary" />
-      <div className="px-4 py-6 max-w-2xl mx-auto space-y-6">
+      <div className="px-4 py-6 max-w-2xl mx-auto space-y-6 stagger-children">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
             <h2 className="text-xl font-bold">AI summaries</h2>

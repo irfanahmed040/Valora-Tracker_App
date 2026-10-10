@@ -282,7 +282,7 @@ function ColorBar({ pct, color }: { pct: number; color: string }) {
     <div className="flex items-center gap-2">
       <div className="h-2 flex-1 rounded-full bg-foreground/10 overflow-hidden">
         <div
-          className="h-full rounded-full transition-all duration-500"
+          className={cn('h-full rounded-full transition-all duration-500', !done && pct > 0 && 'shimmer-bar')}
           style={{
             width: `${Math.min(pct, 100)}%`,
             background: `linear-gradient(90deg, ${color}, ${color}cc)`,

@@ -91,7 +91,7 @@ export function CounterControl({ target, log, date, userId, color = '#6D28FF', o
         <Minus className="h-4 w-4" />
       </Button>
 
-      <span className="text-xl font-bold min-w-9 text-center select-none">{localValue}</span>
+      <span key={localValue} className="text-xl font-bold min-w-9 text-center select-none animate-number-pop">{localValue}</span>
 
       <Button
         size="icon"

@@ -6,12 +6,13 @@ import { usePathname } from 'next/navigation'
 import { cn, formatDate } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { isAdminEmail } from '@/lib/admin'
-import { CalendarRange, LayoutDashboard, Sparkles, ShieldCheck } from 'lucide-react'
+import { CalendarRange, Dumbbell, LayoutDashboard, Sparkles, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { MobileMenu } from './MobileMenu'
 
 const navItems = [
   { href: '/', icon: LayoutDashboard, label: 'Targets' },
+  { href: '/fitness', icon: Dumbbell, label: 'Fitness' },
   { href: '/calendar', icon: CalendarRange, label: 'Analytics' },
   { href: '/summary', icon: Sparkles, label: 'Summary' },
 ]
@@ -55,7 +56,7 @@ export function BottomNav() {
               key={href}
               href={href === '/' ? todayHref : href}
               className={cn(
-                'flex flex-col items-center gap-0.5 px-4 py-1 rounded-lg text-xs font-medium transition-colors',
+                'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors press-spring',
                 isActive ? 'bg-white/25 text-white backdrop-blur-sm' : 'text-white/75'
               )}
             >
@@ -69,7 +70,7 @@ export function BottomNav() {
           <Link
             href="/admin"
             className={cn(
-              'flex flex-col items-center gap-0.5 px-4 py-1 rounded-lg text-xs font-medium transition-colors',
+              'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors press-spring',
               pathname.startsWith('/admin') ? 'bg-white/25 text-white backdrop-blur-sm' : 'text-white/75'
             )}
           >

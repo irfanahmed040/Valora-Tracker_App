@@ -140,5 +140,72 @@
   35% { transform: scale(1.015) }
   100% { transform: scale(1) }
 }
+@keyframes rise-in {
+  0% { opacity: 0; transform: translateY(14px) scale(0.985) }
+  100% { opacity: 1; transform: translateY(0) scale(1) }
+}
+@keyframes slide-in-left {
+  0% { opacity: 0; transform: translateX(-14px) }
+  100% { opacity: 1; transform: translateX(0) }
+}
+@keyframes number-pop {
+  0% { transform: scale(0.6); opacity: 0.4 }
+  55% { transform: scale(1.25) }
+  100% { transform: scale(1); opacity: 1 }
+}
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%) }
+  100% { transform: translateX(200%) }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--glow-color, rgba(109,40,255,0.35)) }
+  50% { box-shadow: 0 0 0 6px transparent }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0) }
+  25% { transform: rotate(-6deg) }
+  75% { transform: rotate(6deg) }
+}
 .animate-pop-in { animation: pop-in 0.35s cubic-bezier(.2,1.4,.4,1) }
 .animate-card-pop { animation: card-pop 0.4s ease-out }
+.animate-rise-in { animation: rise-in 0.45s cubic-bezier(.16,1,.3,1) both }
+.animate-slide-in-left { animation: slide-in-left 0.35s cubic-bezier(.16,1,.3,1) both }
+.animate-number-pop { animation: number-pop 0.3s cubic-bezier(.2,1.4,.4,1) }
+.animate-glow-pulse { animation: glow-pulse 1.6s ease-in-out infinite }
+.animate-wiggle { animation: wiggle 0.4s ease-in-out }
+
+/* Staggered children: apply to a container whose children should cascade in */
+.stagger-children > * { animation: rise-in 0.45s cubic-bezier(.16,1,.3,1) both }
+.stagger-children > *:nth-child(1) { animation-delay: 0ms }
+.stagger-children > *:nth-child(2) { animation-delay: 40ms }
+.stagger-children > *:nth-child(3) { animation-delay: 80ms }
+.stagger-children > *:nth-child(4) { animation-delay: 120ms }
+.stagger-children > *:nth-child(5) { animation-delay: 160ms }
+.stagger-children > *:nth-child(6) { animation-delay: 200ms }
+.stagger-children > *:nth-child(7) { animation-delay: 240ms }
+.stagger-children > *:nth-child(8) { animation-delay: 280ms }
+.stagger-children > *:nth-child(9) { animation-delay: 320ms }
+.stagger-children > *:nth-child(n+10) { animation-delay: 360ms }
+
+/* Shimmer sweep on progress bars */
+.shimmer-bar { position: relative; overflow: hidden }
+.shimmer-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: shimmer-slide 2.2s ease-in-out infinite;
+}
+
+/* Springy press feedback for any interactive element */
+.press-spring { transition: transform 0.15s cubic-bezier(.2,1.4,.4,1) }
+.press-spring:active { transform: scale(0.94) }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop-in, .animate-card-pop, .animate-rise-in, .animate-slide-in-left,
+  .animate-number-pop, .animate-glow-pulse, .animate-wiggle,
+  .stagger-children > *, .shimmer-bar::after {
+    animation: none;
+  }
+}

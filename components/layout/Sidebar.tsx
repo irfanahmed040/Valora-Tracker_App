@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { isAdminEmail } from '@/lib/admin'
-import { CalendarRange, LayoutDashboard, Sparkles, LogOut, ShieldCheck } from 'lucide-react'
+import { CalendarRange, Dumbbell, LayoutDashboard, Sparkles, LogOut, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils'
@@ -15,6 +15,7 @@ import { ExportButton } from './ExportButton'
 
 const navItems = [
   { href: '/', icon: LayoutDashboard, label: 'Targets' },
+  { href: '/fitness', icon: Dumbbell, label: 'Fitness' },
   { href: '/calendar', icon: CalendarRange, label: 'Analytics' },
   { href: '/summary', icon: Sparkles, label: 'AI Summary' },
 ]

@@ -44,6 +44,16 @@ export interface Increment {
   created_at: string
 }
 
+export interface WorkoutSet {
+  id: string
+  user_id: string
+  date: string
+  exercise: string
+  reps: number
+  weight?: number | null   // kg; null = bodyweight
+  created_at: string
+}
+
 export interface WeeklySummary {
   id: string
   user_id: string

@@ -79,7 +79,7 @@ export default async function DayPage({ params }: Props) {
 
       <div className="px-4 py-5 max-w-2xl mx-auto space-y-6">
         {/* Top section — progress bar, then action buttons */}
-        <div className="space-y-3">
+        <div className="space-y-3 animate-rise-in">
           {total > 0 && (
             <div className="space-y-1.5">
               <div className="flex justify-between text-sm">
@@ -100,7 +100,7 @@ export default async function DayPage({ params }: Props) {
         </div>
 
         {total === 0 && (
-          <div className="flex flex-col items-center gap-4 py-16 text-center">
+          <div className="flex flex-col items-center gap-4 py-16 text-center animate-rise-in">
             <LayoutDashboard className="h-12 w-12 text-muted-foreground/40" />
             <div>
               <p className="font-medium">Nothing scheduled today</p>
@@ -115,7 +115,7 @@ export default async function DayPage({ params }: Props) {
 
         {/* Daily targets */}
         {dailyTargets.length > 0 && (
-          <section className="space-y-3">
+          <section className="space-y-3 stagger-children">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Daily targets</h2>
             {dailyTargets.map(target => (
               <TaskCard
@@ -132,7 +132,7 @@ export default async function DayPage({ params }: Props) {
 
         {/* Weekly targets */}
         {weeklyTargets.length > 0 && (
-          <section className="space-y-3">
+          <section className="space-y-3 stagger-children">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Weekly targets</h2>
             {weeklyTargets.map(target => (
               <TaskCard
@@ -149,7 +149,7 @@ export default async function DayPage({ params }: Props) {
 
         {/* One-off tasks for this date */}
         {oneoffTargets.length > 0 && (
-          <section className="space-y-3">
+          <section className="space-y-3 stagger-children">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">One-off tasks</h2>
             {oneoffTargets.map(target => (
               <TaskCard
